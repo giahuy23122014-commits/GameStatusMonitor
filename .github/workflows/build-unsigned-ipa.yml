@@ -15,10 +15,14 @@ jobs:
       - name: Extract source ZIP
         run: |
           unzip -o GameStatusMonitor_iOS_Source.zip -d extracted
+          echo "=== SOURCE FILES ==="
           find extracted -type f | head -100
+          echo "=== SOURCE DIRECTORIES ==="
+          find extracted -type d
 
       - name: Generate Xcode project
         run: |
-          echo "Checking root project.yml"
+          echo "=== PROJECT CONFIG ==="
           cat project.yml
+          echo "=== GENERATE ==="
           xcodegen generate --spec project.yml
