@@ -7,9 +7,9 @@ options:
 targets:
   GameStatusMonitor:
     type: application
-    platform: iOS
+    platform: 
     sources:
-            - extracted/GameStatusMonitor_iOS_Source/GameStatusMonitor
+      - extracted/GameStatusMonitor_iOS_Source/GameStatusMonitor
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.GameStatusMonitor
