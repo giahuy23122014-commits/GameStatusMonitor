@@ -1,28 +1,33 @@
 name: Build unsigned iOS IPA
+
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: macos-15
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Show repository files
-        run: |
-          pwd
-          ls -la
-          find . -maxdepth 4 -type f | sort
+
       - name: Install XcodeGen
         run: brew install xcodegen
-      - name: Find project specification
+
+      - name: Extract source ZIP
         run: |
-          SPEC="$(find . -name project.yml -not -path './.git/*' -print -quit)"
+          unzip -o GameStatusMonitor_iOS_Source.zip -d extracted
+          find extracted -maxdepth 4 -type f
+
+      - name: Locate project specification
+        run: |
+          SPEC="$(find extracted -name project.yml -print -quit)"
           if [ -z "$SPEC" ]; then
-            echo "ERROR: project.yml not found in repository"
+            echo "No project.yml found inside ZIP"
             exit 1
           fi
           echo "Found: $SPEC"
           xcodegen generate --spec "$SPEC"
-      - name: Find generated Xcode project
-        run: |
-          find . -name '*.xcodeproj' -print
+
+      - name: Find generated project
+        run: find . -name '*.xcodeproj' -print
