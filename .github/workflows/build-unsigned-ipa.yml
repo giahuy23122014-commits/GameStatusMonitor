@@ -22,7 +22,9 @@ jobs:
 
       - name: Generate Xcode project
         run: |
-          echo "=== PROJECT CONFIG ==="
+          SOURCE_DIR="$(find extracted -type f -name 'GameStatusMonitorApp.swift' -print -quit | xargs dirname)"
+          echo "Source directory: $SOURCE_DIR"
+          test -n "$SOURCE_DIR" || { echo "Không tìm thấy mã nguồn Swift"; exit 1; }
+          sed -i '' "s|      - .*|      - $SOURCE_DIR|" project.yml
           cat project.yml
-          echo "=== GENERATE ==="
           xcodegen generate --spec project.yml
