@@ -50,6 +50,8 @@ jobs:
             -sdk iphoneos \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
+            GENERATE_INFOPLIST_FILE=YES \
+            INFOPLIST_KEY_CFBundleDisplayName=GameStatusMonitor \
             build
 
       - name: Package IPA
