@@ -22,9 +22,23 @@ jobs:
 
       - name: Generate Xcode project
         run: |
-          SOURCE_DIR="$(find extracted -type f -name 'GameStatusMonitorApp.swift' -print -quit | xargs dirname)"
-          echo "Source directory: $SOURCE_DIR"
-          test -n "$SOURCE_DIR" || { echo "Không tìm thấy mã nguồn Swift"; exit 1; }
-          sed -i '' "s|      - .*|      - $SOURCE_DIR|" project.yml
+          export SOURCE_DIR="$(find extracted -type f -name 'GameStatusMonitorApp.swift' -print -quit | xargs dirname)"
+          test -n "$SOURCE_DIR" || { echo "Không tìm thấy mã nguồn"; exit 1; }
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import os, re
+
+          p = Path("project.yml")
+          s = p.read_text()
+          s = re.sub(r'(?m)^(\s*platform:)\s*$', r'\1 iOS', s)
+          s = re.sub(
+              r'(?m)^(\s*sources:\s*\n\s*-\s*).+$',
+              lambda m: m.group(1) + os.environ["SOURCE_DIR"],
+              s
+          )
+          p.write_text(s)
+          PY
+
           cat project.yml
           xcodegen generate --spec project.yml
