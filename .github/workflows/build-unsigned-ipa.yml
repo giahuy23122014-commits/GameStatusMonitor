@@ -14,20 +14,15 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Extract source ZIP
+      - name: Extract source code
         run: |
-          unzip -o GameStatusMonitor_iOS_Source.zip -d extracted
-          find extracted -maxdepth 4 -type f
+          unzip -o GameStatusMonitor_iOS_Source.zip -d .
+          find GameStatusMonitor -maxdepth 2 -type f
 
-      - name: Locate project specification
+      - name: Generate Xcode project
         run: |
-          SPEC="$(find extracted -name project.yml -print -quit)"
-          if [ -z "$SPEC" ]; then
-            echo "No project.yml found inside ZIP"
-            exit 1
-          fi
-          echo "Found: $SPEC"
-          xcodegen generate --spec "$SPEC"
+          xcodegen generate --spec project.yml
 
-      - name: Find generated project
-        run: find . -name '*.xcodeproj' -print
+      - name: Check generated project
+        run: |
+          find . -name '*.xcodeproj' -print
